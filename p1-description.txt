@@ -1,0 +1,20 @@
+Question:
+
+Write a console application in C or C++ that will read a stream of numbers from
+stdin and, at each step, print the median of all numbers encountered so far and
+the tenth smallest number encountered.
+
+We're particularly interested in the design and clarity of the algorithm and
+data structures (such that part of the problem could be changed without having
+to rewrite unaffected parts) and the speed of the algorithm (how long it
+would take to process 10 million inputs, for instance).
+
+Please do not use the STL or any other external libraries in your solution.
+Please do time your solution and how us how you measured the speed.
+
+
+My solution notes:
+
+Performance was measured with rtdscp, callgrind, and the time command.  I
+answered using a simple array based heap.  There are more exotic heaps I could
+have used but I only have so much time to spend on these things. 

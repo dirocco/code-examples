@@ -1,0 +1,50 @@
+Question:
+
+Parse the NASDAQ itch feed and print the top of the book.
+
+Once you are done writing the code, please create a zip file containing your
+code and instructions for running it. Email the files to us together with an
+estimate of the approximate time you spent on this HW problem.
+
+
+
+My solution notes:
+
+Here is the completed programming assignment.  I compiled it on g++ 5.4.0 on
+Ubuntu 16.04.
+
+After building it with the Makefile, run "./main AMZN
+data/12302015.NASDAQ_ITCH50 out.csv" or "./main symbolsList.txt
+data/12302015.NASDAQ_ITCH50 out.csv"
+
+To run part 1, you can run ./decode with the same arguments as main.  The feed
+will always output to feed.csv.
+
+To run timing, you can run ./timing with the same arguments as main.  You can
+redirect the stdout to a file and parse it with parseTimes.py to get the mean
+and stddev of percentile buckets over 1024 samples.  Times are in rtdscp cycle
+counts.  The timing binary doesn't output any files.
+
+The overall design of the program is to store books in a FlatHash structure,
+which serves as a memory backing and simple hash table.  The idea is to minimize
+cacheline loads and eliminate allocations to reduce tails.   If I wanted to
+spend more time on this, I'd extend the collision handling on the FlatHash
+structure to store orders as well and use an array-based heap for the first
+cacheline of the book.  
+
+This would result in a design that can do a book hash -> insert in 1 cacheline
+load for AddOrder most of the time.  Reduce/Execute would do book hash ->
+orderhash ->level modify in 2 cacheline loads.
+
+But because I don't have time, each book contains a simple std::set for the
+price levels and an unordered_map for the orders.  Even with these structures, a
+stack-based STL allocator would probably help.
+
+I spent a couple evenings on this, once when I sent you the question and again
+last night.  I cleaned it up a little this morning. Some of these files like the
+BucketCounter, StatsCounter, and Logging came from when I did a previous
+programming assignments.
+
+Admittedly, it's a little over engineered with pluggable protocol handlers and TMs and
+whatnot because I was planning on extending it for my own purposes.
+
